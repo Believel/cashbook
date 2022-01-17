@@ -50,4 +50,51 @@ export default class HomeController extends Controller {
       }
     }
   }
+  // 登录
+  async login() {
+    const { ctx, app } = this;
+    const { username, password } = ctx.request.body;
+    const userInfo = await ctx.service.user.getUserByname(username);
+    if (!userInfo) {
+      ctx.body = {
+        code: 500,
+        msg: "账号不存在",
+        data: null
+      }
+      return;
+    }
+    if (userInfo && userInfo.password !== password) {
+      ctx.body = {
+        code: 500,
+        msg: "账号密码错误",
+        data: null
+      }
+      return;
+    }
+    const token = app.jwt.sign({
+      id: userInfo._id,
+      username: userInfo.username,
+      exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60)  // token 有效期为 24 小时
+    }, app.config.jwt.secret)
+
+    ctx.body = {
+      code: 200,
+      msg: "登录成功",
+      data: {
+        token
+      }
+    }
+  }
+  // 验证是否登录
+  async verify() {
+    const { ctx, app } = this;
+    // 通过 token 解析，拿到 user
+    const token = ctx.request.header.authorization as string;
+    const decode = await app.jwt.verify(token, app.config.jwt.secret);
+    ctx.body = {
+      code: 200,
+      message: "验证成功",
+      data: decode
+    }
+  }
 }

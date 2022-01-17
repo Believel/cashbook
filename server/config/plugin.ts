@@ -9,6 +9,11 @@ const plugin: EggPlugin = {
   mongoose: {
     enable: true,
     package: "egg-mongoose"
+  },
+  // 开启 jwt 鉴权
+  jwt: {
+    enable: true,
+    package: "egg-jwt"
   }
 };
 

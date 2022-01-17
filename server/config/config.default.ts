@@ -26,6 +26,11 @@ export default (appInfo: EggAppInfo) => {
       enable: false
     }
   };
+  // 配置 jwt
+  config.jwt = {
+    // 加密字符串
+    secret: "zjr"
+  }
 
   // the return config will combines to EggAppConfig
   return {
