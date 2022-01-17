@@ -63,3 +63,15 @@ export default plugin;
   };
 ```
 
+# 遇到的问题
+1. Post请求`invalid csrf token`问题
+```js
+// 一种处理方式：关闭 csrf
+// {app_root}/config/config.default.ts
+config.security = {
+  csrf: {
+    enable: false
+  }
+};
+```
+
