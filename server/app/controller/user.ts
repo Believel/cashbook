@@ -2,7 +2,7 @@ import { Controller } from 'egg';
 
 const defaultAvatar = 'http://s.yezgea02.com/1615973940679/WeChat77d6d2ac093e247c361f0b8a7aeb6c2a.png'
 
-export default class HomeController extends Controller {
+export default class UserController extends Controller {
   // 注册
   public async register() {
     const { ctx } = this;
@@ -96,5 +96,44 @@ export default class HomeController extends Controller {
       message: "验证成功",
       data: decode
     }
+  }
+  // 获取用户信息
+  async getUserInfo() {
+    const {ctx, app } = this;
+    // 通过 token 解析，拿到 user
+    const token = ctx.request.header.authorization as string;
+    const decode = await app.jwt.verify(token, app.config.jwt.secret) as any;
+    const userInfo = await ctx.service.user.getUserByname(decode.username)
+    ctx.body = {
+      code: 200,
+      msg: '请求成功',
+      data: {
+        id: userInfo._id,
+        username: userInfo.username,
+        signature: userInfo.signature || '',
+        avatar: userInfo.avatar || defaultAvatar
+      }
+    }
+  }
+  // 根据用户名修改用户签名信息
+  async updateUserInfo() {
+    const { ctx, app } = this;
+    // 获取用户签名
+    const { signature = '', avatar = '' } = ctx.request.body;
+    // 通过 token 解析，拿到 user
+    const token = ctx.request.header.authorization as string;
+    const decode = await app.jwt.verify(token, app.config.jwt.secret) as any;
+    const userInfo = await ctx.service.user.getUserByname(decode.username);
+    await ctx.service.user.updateUser(signature, userInfo.username, avatar)
+    ctx.body = {
+      code: 200,
+      msg: '请求成功',
+      data: {
+        id: decode.id,
+        signature,
+        username: userInfo.username
+      }
+    }
+
   }
 }

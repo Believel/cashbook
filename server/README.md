@@ -51,17 +51,35 @@ const plugin: EggPlugin = {
 
 export default plugin;
 ```
-2. connect database
+3. connect database
 ```js
 // {app_root}/config/config.deault.ts
   config.mongoose = {
     client: {
+      // 数据库类型：mongodb
+      // 本地连接地址和端口：127.0.0.1:27017
+      // 连接数据库：daily_const
       url: "mongodb://127.0.0.1:27017/daily_const",
       options: {},
       plugins: []
     }
   };
 ```
+
+4. CURD
+```js
+// 增
+ctx.model.User.create()
+// 删
+// 改
+ctx.model.User.updateOne(condition, doc)
+// 查
+ctx.model.User.findOne(condition)
+```
+
+
+
+
 
 # 遇到的问题
 1. Post请求`invalid csrf token`问题

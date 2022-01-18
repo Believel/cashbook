@@ -31,6 +31,18 @@ export default (appInfo: EggAppInfo) => {
     // 加密字符串
     secret: "zjr"
   }
+  // 配置 文件上传
+  config.multipart = {
+    mode: 'file'
+  }
+  // 上传文件存放目录
+  config.uploadDir = 'app/public/upload';
+  // 跨域配置
+  config.cors = {
+    origin: '*', // 允许所有跨域访问
+    credentials: true, // 允许 Cookie 跨域跨域
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH'
+  };
 
   // the return config will combines to EggAppConfig
   return {

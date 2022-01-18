@@ -40,4 +40,19 @@ export default class User extends Service {
       return null;
     }
   }
+  /**
+   * 根据用户名修改个性签名
+   * @param signature 
+   * @returns 
+   */
+  async updateUser(signature: string, username: string, avatar: string) {
+    const { ctx } = this;
+    try {
+      const result = await ctx.model.User.updateOne({ username }, {signature, avatar});
+      return result
+    } catch (error) {
+      console.log("error", error)
+      return null;
+    }
+  }
 }
