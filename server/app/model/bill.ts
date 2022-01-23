@@ -1,3 +1,4 @@
+import * as moment from "moment";
 export default app => {
   const { mongoose } = app;
   const { Schema } = mongoose;
@@ -7,8 +8,12 @@ export default app => {
     // 账单价格
     amount: { type: String },
     // 账单日期
-    date: { type: Date },
-    // 标签 id
+    date: { 
+      type: Date,
+      default: Date.now,
+      get: v => moment(v).format('YYYY-MM-DD HH:mm:ss')
+    },
+    // 标签 id  ref表示引用Type模型
     type_id: { type: Schema.Types.ObjectId, ref: "Type"},
     // 标签 名称
     type_name: { type: String },
@@ -17,6 +22,7 @@ export default app => {
     // 用户 id
     user_id: { type: Schema.Types.ObjectId, ref: "User"}
   })
+  BillSchema.set('toJSON', { getters: true });
 
   return mongoose.model('Bill', BillSchema);
 }
