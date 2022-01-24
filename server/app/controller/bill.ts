@@ -92,4 +92,92 @@ export default class BillController extends Controller {
     }
 
   }
+  // 账单详情
+  async detail() {
+    const { ctx } = this;
+    const { id } = ctx.params;
+    if (!id) {
+      ctx.body = {
+        code: 500,
+        msg: '订单id不能为空',
+        data: null
+      }
+      return;
+    }
+    try {
+      const result = await ctx.service.bill.findOne(id);
+      ctx.body = {
+        code: 200,
+        msg: '请求成功',
+        data: result
+      }
+      
+    } catch (error) {
+      ctx.body = {
+        code: 500,
+        msg: '系统错误',
+        data: null
+      }
+    }
+  }
+  // 编辑账单
+  async update() {
+    const { ctx } = this;
+    const { _id, amount, type_id, type_name, date, pay_type, remark = '', user_id } = ctx.request.body;
+    if (!amount || !type_id || !type_name || !date || !pay_type) {
+      ctx.body = {
+        code: 400,
+        msg: '参数错误',
+        data: null
+      }
+    }
+    try {
+      const result = await ctx.service.bill.update({
+        _id, // 账单 id
+        amount, // 金额
+        type_id, // 消费类型 id
+        type_name, // 消费类型名称
+        date, // 日期
+        pay_type, // 消费类型
+        remark, // 备注
+        user_id // 用户 id
+      });
+      ctx.body = {
+        code: 200,
+        msg: '请求成功',
+        data: result
+      }
+    } catch (error) {
+      ctx.body = {
+        code: 500,
+        msg: '系统错误',
+        data: null
+      }
+    }
+  }
+  async delete() {
+    const { ctx } = this;
+    const { id } = ctx.request.body;
+    if (!id) {
+      ctx.body = {
+        code: 400,
+        msg: '参数错误',
+        data: null
+      }
+    }
+    try {
+      const result = await ctx.service.bill.delete(id);
+      ctx.body = {
+        code: 200,
+        msg: '请求成功',
+        data: result
+      }
+    } catch (error) {
+      ctx.body = {
+        code: 500,
+        msg: '系统错误',
+        data: null
+      }
+    }
+  }
 }

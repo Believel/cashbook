@@ -49,4 +49,36 @@ export default class Bill extends Service {
       return null;
     }
   }
+  // 详情
+  async findOne(id: string) {
+    const { ctx } = this;
+    try {
+      const result = await ctx.model.Bill.findOne({ _id: id})
+      return result;
+    } catch (error) {
+      return null;
+    }
+  }
+  // 根据订单id 修改订单信息
+  async update(condition) {
+    const { ctx } = this;
+    const { _id, user_id,  ...rest} = condition
+    try {
+      const result = await ctx.model.Bill.updateOne({ _id, user_id }, rest);
+      return result;
+    } catch (error) {
+      return null;
+    }
+  }
+  // 删除
+  async delete(_id: string) {
+    const { ctx } = this;
+    try {
+      const result = await ctx.model.Bill.findOneAndRemove({ _id });
+      return result;
+    } catch (error) {
+      return null;
+    }
+
+  }
 }

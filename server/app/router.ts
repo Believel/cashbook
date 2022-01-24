@@ -14,6 +14,9 @@ export default (app: Application) => {
   router.post('/api/upload', jwtErr, controller.upload.upload);
   // 账单相关路由
   router.post('/api/bill/add', jwtErr, controller.bill.addBill);
-  router.post('/api/bill/list', jwtErr, controller.bill.list)
+  router.post('/api/bill/list', jwtErr, controller.bill.list);
+  router.get('/api/bill/detail/:id', jwtErr, controller.bill.detail);
+  router.post('/api/bill/update', jwtErr, controller.bill.update);
+  router.post('/api/bill/delete', jwtErr, controller.bill.delete);
 
 };
