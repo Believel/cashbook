@@ -1,5 +1,4 @@
 import { Service } from "egg";
-// import * as moment from "moment";
 
 interface Condition {
   pageSize: number;
@@ -23,7 +22,7 @@ export default class Bill extends Service {
   async find(condition: Condition ) {
     const { pageSize, pageNo, date, ...rest} = condition;
     const { ctx } = this;
-    const { start, end } = date;
+    const { start, end } = date || {};
 
     // 日期模糊查询： 2022-01 这样没实现通
     // $regex  模糊查询 {}
@@ -31,8 +30,18 @@ export default class Bill extends Service {
     // date: {'$regex': reg }
     
     try {
-      const result = await ctx.model.Bill.find({ ...rest, date: { $gte: start, $lt: end }}).skip(pageSize * (pageNo - 1)).limit(pageSize);
-      return result;
+      let params: any = {...rest};
+      if (date) {
+        params.date = { $gte: start, $lt: end }
+      }
+      const [result, count] = await Promise.all([
+        ctx.model.Bill.find(params).skip(pageSize * (pageNo - 1)).limit(pageSize),
+        ctx.model.Bill.countDocuments(params)
+      ]);
+      return {
+        result,
+        count
+      };
     } catch (error) {
       return null;
     }

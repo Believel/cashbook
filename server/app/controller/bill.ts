@@ -49,7 +49,7 @@ export default class BillController extends Controller {
       const token = ctx.request.header.authorization as string;
       const decode = await app.jwt.verify(token, app.config.jwt.secret) as any;
       let params: any = {};
-      if (type_id !== 'all') {
+      if (type_id && type_id !== 'all') {
         params.type_id = type_id;
       }
       // 根据传入的 年月 找到要查询的范围，例如：输入：2020-01，那就查询范围：2020-01-01 ~ 2020-01-31
@@ -61,13 +61,9 @@ export default class BillController extends Controller {
           end
         }
       }
-      const list = await ctx.service.bill.find({
+      const result = await ctx.service.bill.find({
         pageNo: Number(pageNo), 
         pageSize: Number(pageSize),
-        user_id: decode.id,
-        ...params
-      }) as any[];
-      const count = await ctx.service.bill.count({
         user_id: decode.id,
         ...params
       }) as any;
@@ -76,10 +72,10 @@ export default class BillController extends Controller {
         code: 200,
         msg: '请求成功',
         data: {
-          list: list,
+          list: result?.result,
           pageSize,
           pageNo,
-          totalPage:  Math.ceil(count / Number(pageSize))
+          totalPage:  Math.ceil(result?.count / Number(pageSize))
         }
       }
 

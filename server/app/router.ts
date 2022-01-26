@@ -19,4 +19,6 @@ export default (app: Application) => {
   router.post('/api/bill/update', jwtErr, controller.bill.update);
   router.post('/api/bill/delete', jwtErr, controller.bill.delete);
 
+  router.post('/api/type/add', jwtErr, controller.type.create)
+
 };
